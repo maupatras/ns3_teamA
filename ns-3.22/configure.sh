@@ -72,7 +72,7 @@ symlink_python () {
 	sudo ln -s /usr/bin/python$1 /usr/bin/python
 	
 	echo ""
-	echo $blue"-- Current Python Symbolic Link--"$reset
+	echo $blue"-- Current Python Symbolic Link --"$reset
 	echo ""
 	python --version
 	echo ""
@@ -93,7 +93,7 @@ python_install () {
 
 netanim_install () {
 
-	read -r -p "Do you want to install NetAnimator? [y/N] " response
+	read -r -p "Do you want to install NetAnimator? [Y/n] " response
 	case $response in
 	    [yY][eE][sS]|[yY]) 
 
@@ -123,7 +123,7 @@ netanim_install () {
 			qmake NetAnim.pro
 			make
 
-			read -r -p "Do you want to run NetAnimator? [y/N] " response1
+			read -r -p "Do you want to run NetAnimator? [Y/n] " response1
 			case $response1 in
 			    [yY][eE][sS]|[yY])
 
@@ -135,14 +135,14 @@ netanim_install () {
 			esac
 			;;
 	    *)
-	        exit
+	        continue
 	        ;;
 	esac		
 }
 
 pyviz_install () {
 
-	read -r -p "Do you want to start PyViz installation? [y/N] " response
+	read -r -p "Do you want to start PyViz installation? [Y/n] " response
 	case $response in
 	    [yY][eE][sS]|[yY])
 			cd
@@ -167,7 +167,7 @@ pyviz_install () {
 			esac
 			;;
 		*)
-			exit
+			continue
 			;;
 	esac
 
@@ -175,7 +175,7 @@ pyviz_install () {
 
 ns-3_install () {
 
-	read -r -p "Are you sure you want to continue? [y/N] " response
+	read -r -p "Are you sure you want to continue? [Y/n] " response
 	case $response in
 	    [yY][eE][sS]|[yY])
 
