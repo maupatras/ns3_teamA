@@ -31,6 +31,10 @@ Echo "Downloading NS3..."
 Invoke-WebRequest -OutFile "$TempCygDir\ns3.tar.bz2" https://www.nsnam.org/release/ns-allinone-3.22.tar.bz2
 Echo "Done. Unzipping files..."
 $env:path = "$($env:path);c:\cygwin\bin"
-C:\Cygwin\bin\tar.exe -xjf .\ns-allinone-3.22.tar.bz2
+tar.exe -xjf $TempCygDir\ns3.tar.bz2 --force-local
 Echo ""
 Echo "Done."
+
+Echo "Running waf configure..."
+cd .\ns-allinone-3.22\ns-3.22
+python2.7.exe -x waf configure
