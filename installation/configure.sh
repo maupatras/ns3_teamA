@@ -27,3 +27,19 @@ prerequisites () {
 	echo ""
 	echo $green"Prerequisites installed"$reset
 } 
+
+symlink_compiler () {
+
+	sudo rm /usr/bin/g++
+	sudo rm /usr/bin/gcc
+
+	sudo ln -s /usr/bin/gcc-$1 /usr/bin/gcc
+	sudo ln -s /usr/bin/g++-$1 /usr/bin/g++
+
+	echo ""
+	echo $blue"-- Current gcc/g++ Compiler's Symbolic Link--"$reset
+	echo ""
+	gcc --version
+	g++ --version
+
+}
