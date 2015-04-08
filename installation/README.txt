@@ -6,7 +6,7 @@ This is ns-3 installation guide for the versions 3.15 up to 3.22 (latest ns-3.22
 
 === Main way ===
 1. Download installation file (installation.zip) and extract it
-2. Execute installation_guide file (double click) and then follow the instructions
+2. Execute install_guide file (double click) and then follow the instructions
 
 === Alternative way ===
 1. Download installation file (installation.zip) and extract it
