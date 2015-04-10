@@ -1,4 +1,4 @@
-This is ns-3 installation guide for the versions 3.15 up to 3.22 (latest ns-3.22 version so far).
+This is ns-3 installation guide for the versions 3.15 up to 3.22 (latest ns-3.22 version release, February 2015).
 
 -------------------------------------------------
 |    Installation Steps (Ubuntu/Debian OS)      |
