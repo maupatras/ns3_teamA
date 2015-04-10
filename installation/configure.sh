@@ -43,3 +43,24 @@ symlink_compiler () {
 	g++ --version
 
 }
+
+compilers_install () {
+
+	# gcc check
+	if dpkg -s gcc-$1 &>/dev/null
+	then 	echo $green"gcc-$1 compiler installed"$reset
+	else 	echo $red"gcc-$1 compiler not installed"$reset
+		sudo apt-get install gcc-$1
+		echo ""
+		echo $green"gcc-$1 installed succesfully"$reset
+	fi	
+	# g++ check
+	if dpkg -s g++-$1 &>/dev/null
+	then 	echo $green"g++-$1 compiler installed"$reset
+	else 	echo $red"g++-$1 compiler not installed"$reset
+		sudo apt-get install g++-$1
+		echo ""
+		echo $green"g++-$1 installed succesfully"$reset
+	fi
+
+}
