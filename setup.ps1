@@ -35,6 +35,19 @@ tar.exe -xjf $TempCygDir\ns3.tar.bz2 --force-local
 Echo ""
 Echo "Done."
 
+Echo "Checking if Python 2.7 is installed..."
+If (!(Get-Item -Path Registry::HKEY_CURRENT_USER\Software\Python\PythonCore\2.7\InstallPath))
+{
+	Echo "Downloading Python 2.7..."
+	Invoke-WebRequest -OutFile "$TempCygDir\pythonsetup.msi" https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
+} Else {
+	$pythonversion = (Get-ItemProperty -Path Registry::HKEY_CURRENT_USER\Software\Python\PythonCore\2.7\InstallPath\InstallGroup).'(default)'
+	Echo "$pythonversion detected"
+}
+
+$pythonpath = (Get-ItemProperty -Path Registry::HKEY_CURRENT_USER\Software\Python\PythonCore\2.7\InstallPath).'(default)'
+$env:path = "$($env:path);$pythonpath"
+
 Echo "Running waf configure..."
 cd .\ns-allinone-3.22\ns-3.22
-python2.7.exe -x waf configure
+python -x waf configure
