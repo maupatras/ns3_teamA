@@ -64,3 +64,29 @@ compilers_install () {
 	fi
 
 }
+
+symlink_python () {
+
+	sudo rm /usr/bin/python
+
+	sudo ln -s /usr/bin/python$1 /usr/bin/python
+	
+	echo ""
+	echo $blue"-- Current Python Symbolic Link --"$reset
+	echo ""
+	python --version
+	echo ""
+}
+
+python_install () {
+
+	# python2.7 check
+	if dpkg -s python$1 &>/dev/null
+	then 	echo $green"python$1 compiler installed"$reset
+	else 	echo $red"python$1 compiler not installed"$reset
+		sudo apt-get install python$1
+		echo ""
+		echo $green"python$1 installed succesfully"$reset
+	fi	
+
+}
