@@ -90,3 +90,52 @@ python_install () {
 	fi	
 
 }
+
+netanim_install () {
+
+	read -r -p "Do you want to install NetAnimator? [Y/n] " response
+	case $response in
+	    [yY][eE][sS]|[yY]) 
+
+			case "$version" in
+
+				3.20 | 3.21 | 3.22) 
+					netanim_version=3.105
+					;;
+				3.18 | 3.17 | 3.16)
+					netanim_version=3.103
+					;;
+				3.19)
+					netanim_version=3.104
+					;;
+				3.15)
+					netanim_version=3.101
+					;;
+				*)
+					echo $red"No NetAnimator found..."$reset
+					;;
+			esac
+	        
+	        # echo $netanim_version
+	        cd
+			cd ns$1/ns-allinone-$1/netanim-$netanim_version
+			make clean
+			qmake NetAnim.pro
+			make
+
+			read -r -p "Do you want to run NetAnimator? [Y/n] " response1
+			case $response1 in
+			    [yY][eE][sS]|[yY])
+
+					./NetAnim 
+	        		;;
+	        	*)
+					continue
+					;;
+			esac
+			;;
+	    *)
+	        continue
+	        ;;
+	esac		
+}
