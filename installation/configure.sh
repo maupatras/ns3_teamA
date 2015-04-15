@@ -139,3 +139,37 @@ netanim_install () {
 	        ;;
 	esac		
 }
+
+pyviz_install () {
+
+	read -r -p "Do you want to start PyViz installation? [Y/n] " response
+	case $response in
+	    [yY][eE][sS]|[yY])
+			cd
+			sudo apt-get install python-dev python-kiwi python-pygoocanvas python-pygraphviz
+			sudo apt-get install python-gnome2 python-gnomedesktop python-rsvg
+
+			cd ns$version/ns-allinone-$version
+			#ls
+			./build.py --enable-examples --enable-tests
+			#ls
+			# --Example--
+			read -r -p "Do you want to run a PyViz Example? [y/N] " response
+			case $response in
+			    [yY][eE][sS]|[yY])
+
+					cd ns-$1
+					./waf --run examples/tutorial/third --vis
+					;;
+				*)
+					continue
+					;;
+			esac
+			;;
+		*)
+			continue
+			;;
+	esac
+
+}
+
