@@ -173,3 +173,95 @@ pyviz_install () {
 
 }
 
+ns-3_install () {
+
+	read -r -p "Are you sure you want to continue? [Y/n] " response
+	case $response in
+	    [yY][eE][sS]|[yY])
+
+			# installing prerequisites
+			prerequisites
+			# installing compilers
+			compilers_install $compiler
+			# change compiler's symbolic link 
+			symlink_compiler $compiler
+			# installing python
+			python_install $python
+			# change compiler's symbolic link 
+			symlink_python $python
+
+			echo $blue"Installing ns-$version..."$reset
+			cd
+			rm -rf ns$version
+			mkdir ns$version
+			cd ns$version
+
+			wget --no-check-certificate http://www.nsnam.org/release/ns-allinone-$version.tar.bz2
+			tar xjf ns-allinone-$version.tar.bz2
+			cd ns-allinone-$version/
+			# ls
+			./build.py --enable-examples --enable-tests
+			cd ns-$version
+			# ls
+			./waf -d debug --enable-examples --enable-tests configure
+			./waf
+			# ./test.py
+		;;
+	*)
+		exit
+		;;
+	esac
+
+}
+
+case "$version" in
+
+	3.15 | 3.16 | 3.17)
+		
+		# assign gcc/g++ & python version compiler
+		compiler=4.7
+		python=2.7
+
+		# installing ns-3
+		ns-3_install $version $compiler $python
+
+		# installing NetAnimator
+		netanim_install $version
+
+		# installing PyViz
+		pyviz_install $version
+		
+		echo ""
+		echo $green"ns-$version installed succesfully"$reset
+		echo ""
+
+		;;
+		
+	3.18 | 3.19 | 3.20 | 3.21 | 3.22) 
+		
+		# assign gcc/g++ & python version compiler
+		compiler=4.8
+		python=2.7
+
+		# installing ns-3
+		ns-3_install $version $compiler $python
+
+		# installing NetAnimator
+		netanim_install $version
+
+		# installing NetAnimator
+		pyviz_install $version
+
+		echo ""
+		echo $green"ns-$version installed succesfully"$reset
+		echo ""
+
+		;;
+	*)
+		
+		echo ""
+		echo $red"No available version of ns-$version installation guide, try again !"$reset
+		echo "Available versions: 3.15, 3.16, 3.17, 3.18, 3.19, 3.20, 3.21, 3.22"
+		./configure.sh
+		;;
+esac
