@@ -25,6 +25,15 @@ Echo "Done"
 Echo "Installing g++ package (C++ compiler)..."
 Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -P gcc-g++"
 Echo "Done"
+Echo "Installing make package..."
+Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -P make"
+Echo "Done"
+Echo "Installing gdb package..."
+Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -P gdb"
+Echo "Done"
+Echo "Installing python..."
+Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -C Python"
+Echo "Done"
 Echo ""
 
 Echo "Downloading NS3..."
@@ -35,21 +44,7 @@ tar.exe -xjf $TempCygDir\ns3.tar.bz2 --force-local
 Echo ""
 Echo "Done."
 
-Echo "Checking if Python is installed..."
-If (!(Get-Item -Path Registry::HKEY_CURRENT_USER\Software\Python\PythonCore\2.7\InstallPath))
-{
-	Echo "Downloading Python v2.7.9..."
-	Invoke-WebRequest -OutFile "$TempCygDir\pythonsetup.msi" https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
-} Else {
-	$pythonversion = (Get-ItemProperty -Path Registry::HKEY_CURRENT_USER\Software\Python\PythonCore\2.7\InstallPath\InstallGroup).'(default)'
-	Echo "$pythonversion detected"
-}
-
-$pythonpath = (Get-ItemProperty -Path Registry::HKEY_CURRENT_USER\Software\Python\PythonCore\2.7\InstallPath).'(default)'
-$env:path = "$($env:path);$pythonpath"
-
 Echo "Running configure..."
 cd .\ns-allinone-3.22\
-./build.py --enable-examples --enable-tests
-#./waf -d debug --enable-examples --enable-tests configure
-#./waf
+New-Alias -Name python -Value "C:\cygwin\bin\python2.7.exe"
+python ./build.py --enable-examples --enable-tests
