@@ -1,56 +1,70 @@
-param ( $TempCygDir="$env:temp\cygInstall" )
-if(!(Test-Path -Path $TempCygDir -PathType Container))
+param ( 
+	$tempcygwindir="$env:temp\cygInstall",
+	[string]$folder = $PSScriptRoot,
+	$cygwinpath = "C:\Cygwin\"
+)
+Echo $tempcygwindir
+If (!(Test-Path -Path $tempcygwindir -PathType Container))
 {
-   $null = New-Item -Type Directory -Path $TempCygDir -Force
+   $null = New-Item -Type Directory -Path $tempcygwindir -Force
 }
 
+Write-Host "`nNS-3 installation script`n" -foreground "cyan"
+$title = 'Installing NS-3 v3.22 in $folder and Cygwin in $cygwinpath'
+$prompt = 'Proceed?'
+$confirm = New-Object System.Management.Automation.Host.ChoiceDescription '&Yes','Installs Cygwin with these parameters'
+$abort = New-Object System.Management.Automation.Host.ChoiceDescription '&No','Aborts the operation'
+$options = [System.Management.Automation.Host.ChoiceDescription[]] ($confirm, $abort)
+$choice = $host.ui.PromptForChoice($title,$prompt,$options,0)
+
+If ($choice) {
+	Write-Host "Aborted" -foreground "red"
+	Exit
+}
+
+# Check if 32 or 64-bit OS, download appropriate Cygwin
+Write-Host "Downloading Cygwin..." -foreground "cyan"
 $os=Get-WMIObject win32_operatingsystem
-
 If ($os.OSArchitecture -Match "64-bit") {
-	Write-Host "Downloading Cygwin..." -foreground "cyan"
-	Invoke-WebRequest -OutFile "$TempCygDir\setup.exe" https://www.cygwin.com/setup-x86_64.exe
-	Write-Host "Successful download: setup.exe" -foreground "green"
+	Invoke-WebRequest -OutFile "$tempcygwindir\setup.exe" https://www.cygwin.com/setup-x86_64.exe
 } Else {
-	Write-Host "Downloading Cygwin..." -foreground "cyan"
-	Invoke-WebRequest -OutFile "$TempCygDir\setup.exe" https://www.cygwin.com/setup-x86.exe
-	Write-Host "Successful download: setup.exe" -foreground "green"
+	Invoke-WebRequest -OutFile "$tempcygwindir\setup.exe" https://www.cygwin.com/setup-x86.exe
+}
+Write-Host "Download complete" -foreground "green"
+
+# Install Cygwin and packages
+Write-Host '`nIntalling Cygwin `& prerequisite packages...' -foreground "cyan"
+Start-Process -wait -FilePath "$tempcygwindir\setup.exe" -ArgumentList "-q -n -l $tempcygwindir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R $cygwinpath -P gcc-core,gcc-g++,make,gdb,libQtCore4-devel,libQtGui4-devel -C Python"
+$env:path = "$($env:path);$cygwinpath\bin"
+Write-Host "Done" -foreground "green"
+
+# Download NS-3
+Write-Host "`nDownloading NS-3 v3.22..." -foreground "cyan"
+Invoke-WebRequest -OutFile "$tempcygwindir\ns3.tar.bz2" https://www.nsnam.org/release/ns-allinone-3.22.tar.bz2
+
+Write-Host "Done. Unzipping files..." -foreground "green"
+tar.exe -xjf $tempcygwindir\ns3.tar.bz2 -C $folder
+Write-Host "`nDone" -foreground "green"
+
+# Install NS-3
+Write-Host "Building NS-3..." -foreground "cyan"
+cd $folder\ns-allinone-3.22\
+
+New-Alias -Name python -Value "$cygwinpath\bin\python2.7.exe"
+python ./build.py --enable-examples --enable-tests
+Write-Host "`nBuilding complete" -foreground "green"
+
+#Install NetAnim
+If (!$nonam) {
+	Write-Host "Building NetAnim" -foreground "cyan"
+	cd $folder\ns-allinone-3.22\netanim-3.105
+	make clean
+	& $cygwinpath\lib\qt4\bin\qmake.exe NetAnim.pro
+	make
+	Write-Host "`nBuilding complete" -foreground "green"
 }
 
-Echo ""
-Write-Host "Intalling Cygwin..." -foreground "cyan"
-Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin"
-Write-Host "Done" -foreground "green"
-Write-Host "Installing gcc package (C compiler)..." -foreground "cyan"
-Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -P gcc-core"
-Write-Host "Done" -foreground "green"
-Write-Host "Installing g++ package (C++ compiler)..." -foreground "cyan"
-Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -P gcc-g++"
-Write-Host "Done" -foreground "green"
-Write-Host "Installing make package" -foreground "cyan"
-Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -P make"
-Write-Host "Done" -foreground "green"
-Write-Host "Installing gdb package" -foreground "cyan"
-Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -P gdb"
-Write-Host "Done" -foreground "green"
-Write-Host "Installing python" -foreground "cyan"
-Start-Process -wait -FilePath "$TempCygDir\setup.exe" -ArgumentList "-q -n -l $TempCygDir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R c:\Cygwin -C Python"
-Write-Host "Done" -foreground "green"
-Echo ""
-
-Write-Host "Downloading NS-3 v3.22..." -foreground "cyan"
-Invoke-WebRequest -OutFile "$TempCygDir\ns3.tar.bz2" https://www.nsnam.org/release/ns-allinone-3.22.tar.bz2
-Write-Host "Done. Unzipping files..." -foreground "green"
-$env:path = "$($env:path);c:\cygwin\bin"
-tar.exe -xjf $TempCygDir\ns3.tar.bz2 --force-local
-Echo ""
-Write-Host "Done" -foreground "green"
-
-Write-Host "Building NS-3..." -foreground "green"
-cd .\ns-allinone-3.22\
-New-Alias -Name python -Value "C:\cygwin\bin\python2.7.exe"
-python ./build.py --enable-examples --enable-tests
-Write-Host "Done" -foreground "green"
-
-Write-Host "Deleting temp download folder..." -foreground "cyan"
-rmdir $TempCygDir -recurse
-Write-Host "Temporary folder $TempCygDir successfully deleted" -foreground "green"
+# Remove temp files
+Write-Host "All installations complete. Deleting temp download folder..." -foreground "cyan"
+rmdir $tempcygwindir -recurse
+Write-Host "Temporary folder $tempcygwindir successfully deleted" -foreground "green"
