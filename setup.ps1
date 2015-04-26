@@ -49,7 +49,7 @@ If ($os.OSArchitecture -Match "64-bit") {
 Write-Host "Download complete" -foreground "green"
 
 # Install Cygwin and packages
-Write-Host "`nIntalling Cygwin `& prerequisite packages..." -foreground "cyan"
+Write-Host "`nInstalling Cygwin `& prerequisite packages..." -foreground "cyan"
 Start-Process -wait -FilePath "$tempcygwindir\setup.exe" -ArgumentList "-q -n -l $tempcygwindir -s ftp://ftp.ntua.gr/pub/pc/cygwin/ -R $cygwinpath -P gcc-core,gcc-g++,make,gdb,libQtCore4-devel,libQtGui4-devel -C Python"
 $env:path = "$($env:path);$cygwinpath\bin"
 Write-Host "Done" -foreground "green"
