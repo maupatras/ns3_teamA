@@ -42,17 +42,17 @@ int main(int argc, char* argv[]) {
 	gtk_container_add(GTK_CONTAINER(window), fixed);
 
 	label_head = gtk_label_new(NULL);
-	gtk_label_set_markup(GTK_LABEL(label_head), "<b>ns-3 Installation Guide</b>");
+	gtk_label_set_markup(GTK_LABEL(label_head), "<b>NS-3 Installation Guide</b>");
 	gtk_fixed_put(GTK_FIXED(fixed), label_head, 10, 10);
 	gtk_widget_set_size_request(label_head, 200, 35);
 
 	label_text1 = gtk_label_new(NULL);
-	gtk_label_set_markup(GTK_LABEL(label_text1), "Press Start Button and a terminal window will be appeared");
+	gtk_label_set_markup(GTK_LABEL(label_text1), "Press Start Button and a terminal window will appear");
 	gtk_fixed_put(GTK_FIXED(fixed), label_text1, 0, 50);
 	gtk_widget_set_size_request(label_text1, 450, 35);
 
 	label_text2 = gtk_label_new(NULL);
-	gtk_label_set_markup(GTK_LABEL(label_text2), "in order to select the version of ns-3 that you want to install...");
+	gtk_label_set_markup(GTK_LABEL(label_text2), "in order to select the version of NS-3 that you want to install...");
 	gtk_fixed_put(GTK_FIXED(fixed), label_text2, 6, 70);
 	gtk_widget_set_size_request(label_text2, 450, 35);
 
