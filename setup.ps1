@@ -76,3 +76,5 @@ If (!$nonam) {
 Write-Host "`nAll installations complete. Deleting temporary download folder..." -foreground "cyan"
 rmdir $tempcygwindir -recurse
 Write-Host "Temporary folder $tempcygwindir successfully deleted" -foreground "green"
+
+Write-Host "`nReady!" -foreground "cyan"
