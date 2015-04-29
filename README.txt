@@ -9,3 +9,4 @@ This is ns-3 installation guide for the versions 3.15 up to 3.22 (latest ns-3.22
 3. Allow Powershell script execution by running "Set-ExecutionPolicy Unrestricted -Scope Process"
 4. Execute the script by running ".\setup.ps1 -parameter1 value1 -parameter2 value2"
    The number of parameters can be any from none to all of the parameters listed.
+5. Follow any instructions that show up
